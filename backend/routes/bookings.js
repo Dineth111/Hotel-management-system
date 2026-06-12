@@ -31,28 +31,7 @@ const sendAdminNotification = async (booking, roomName) => {
       from: process.env.EMAIL_USER,
       to: adminEmail,
       subject: `New Booking Request - ${booking.bookingId}`,
-      text: `Dear Admin,
-
-A new booking request has been received on Hotel Lanka Pro.
-
-Booking Details:
-------------------------------------------
-Booking ID:      ${booking.bookingId}
-Customer Name:   ${booking.customerName}
-Customer Email:  ${booking.customerEmail}
-Customer Phone:  ${booking.customerPhone}
-Room Name:       ${roomName}
-Check-in Date:   ${new Date(booking.checkIn).toLocaleDateString()}
-Check-out Date:  ${new Date(booking.checkOut).toLocaleDateString()}
-Number of Guests:${booking.guests}
-Nights:          ${booking.nights}
-Total Amount:    LKR ${booking.totalAmount}
-Status:          ${booking.status}
-
-Please log in to the admin panel to Approve or Reject this request.
-
-Regards,
-Hotel Lanka Pro System`
+      text: `Dear Admin,\n\nA new booking request has been received on Hotel Lanka Pro.\n\nBooking ID: ${booking.bookingId}\nCustomer: ${booking.customerName} (${booking.customerPhone})\nRoom: ${roomName}\nCheck-in: ${new Date(booking.checkIn).toLocaleDateString()}\nCheck-out: ${new Date(booking.checkOut).toLocaleDateString()}\nTotal: LKR ${booking.totalAmount}\n\nPlease moderate via the Admin Panel.`
     };
 
     await transporter.sendMail(mailOptions);
@@ -167,8 +146,10 @@ router.post('/', async (req, res) => {
       status: 'Pending'
     });
 
-    // Send asynchronous email notification in background
+    // Send asynchronous notifications
     sendAdminNotification(booking, room.name);
+    const { sendSMSNotification } = require('../utils/smsService');
+    sendSMSNotification(customerPhone, `Hello ${customerName}, your booking request at Hotel Lanka Pro is received! Booking ID: ${booking.bookingId}. Status: Pending.`);
 
     res.status(201).json({ message: 'Booking request submitted successfully', booking });
   } catch (error) {

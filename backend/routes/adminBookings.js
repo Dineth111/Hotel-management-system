@@ -75,6 +75,9 @@ router.put('/:id/approve', async (req, res) => {
     booking.status = 'Approved';
     await booking.save();
 
+    const { sendSMSNotification } = require('../utils/smsService');
+    sendSMSNotification(booking.customerPhone, `Hello ${booking.customerName}, your booking ${booking.bookingId} has been APPROVED! We look forward to welcoming you on ${new Date(booking.checkIn).toLocaleDateString()}.`);
+
     res.json({ message: 'Booking approved successfully', booking });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -103,6 +106,9 @@ router.put('/:id/reject', async (req, res) => {
     booking.rejectionReason = rejectionReason;
     await booking.save();
 
+    const { sendSMSNotification } = require('../utils/smsService');
+    sendSMSNotification(booking.customerPhone, `Hello ${booking.customerName}, your booking ${booking.bookingId} was declined. Reason: ${rejectionReason}`);
+
     res.json({ message: 'Booking rejected successfully', booking });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -124,6 +130,9 @@ router.put('/:id/checkin', async (req, res) => {
     booking.status = 'CheckedIn';
     await booking.save();
 
+    const { sendSMSNotification } = require('../utils/smsService');
+    sendSMSNotification(booking.customerPhone, `Hello ${booking.customerName}, welcome! You have successfully checked in to your stay ${booking.bookingId}.`);
+
     res.json({ message: 'Booking status updated to CheckedIn', booking });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -144,6 +153,9 @@ router.put('/:id/checkout', async (req, res) => {
 
     booking.status = 'CheckedOut';
     await booking.save();
+
+    const { sendSMSNotification } = require('../utils/smsService');
+    sendSMSNotification(booking.customerPhone, `Hello ${booking.customerName}, you have checked out successfully. Thank you for staying at Hotel Lanka Pro!`);
 
     res.json({ message: 'Booking status updated to CheckedOut', booking });
   } catch (error) {
