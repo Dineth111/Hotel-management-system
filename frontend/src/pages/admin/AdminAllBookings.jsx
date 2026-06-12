@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Calendar, User, LogIn, LogOut, SlidersHorizontal, Info, Download, MessageSquare } from 'lucide-react';
+import { Calendar, User, LogIn, LogOut, SlidersHorizontal, Info, Download, MessageCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { exportBookingsToPDF } from '../../utils/pdfExport';
 
@@ -24,15 +24,6 @@ const AdminAllBookings = () => {
   useEffect(() => {
     fetchBookings();
   }, [statusFilter]);
-
-  const handleSendSMS = async (bookingId) => {
-    try {
-      const res = await axios.post(`/admin/bookings/${bookingId}/notify-sms`);
-      toast.success(res.data.message);
-    } catch (err) {
-      toast.error('Failed to trigger SMS notification');
-    }
-  };
 
   const handleCheckIn = async (id) => {
     try {
@@ -142,14 +133,16 @@ const AdminAllBookings = () => {
                       {booking.customerPhone && (
                         <div className="flex items-center gap-1.5 mt-0.5">
                           <span className="text-[10px] text-slate-400 font-semibold">{booking.customerPhone}</span>
-                          <button
-                            onClick={() => handleSendSMS(booking._id)}
-                            className="inline-flex items-center text-[9px] font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-1.5 py-0.5 rounded-md transition-smooth cursor-pointer"
-                            title="Send SMS notification"
+                          <a
+                            href={`https://wa.me/${booking.customerPhone.replace(/\D/g, '')}?text=Hello%20${encodeURIComponent(booking.customerName)}%2C%20this%20is%20Hotel%20Lanka%20Pro.%20Your%20booking%20${booking.bookingId}%20status%2520is%2520now%2520${booking.status}.`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center text-[9px] font-bold text-emerald-600 hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100/80 px-1.5 py-0.5 rounded-md transition-smooth"
+                            title="Notify on WhatsApp"
                           >
-                            <MessageSquare className="h-3 w-3 shrink-0" />
-                            <span>Send SMS</span>
-                          </button>
+                            <MessageCircle className="h-3 w-3 shrink-0" />
+                            <span>WhatsApp</span>
+                          </a>
                         </div>
                       )}
                     </td>
