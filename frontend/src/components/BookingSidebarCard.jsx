@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { ShieldAlert, MessageCircle, Sparkles, CheckCircle2, Ticket, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { formatWhatsAppUrl } from '../utils/whatsapp';
 
 const ADD_ONS_CATALOG = [
   { name: 'Airport Transfer', price: 5000, desc: 'Private airport shuttle' },
@@ -167,7 +168,7 @@ const BookingSidebarCard = ({
         {settings && settings.whatsapp && (
           <div className="border-t border-slate-100 pt-4">
             <a 
-              href={`https://wa.me/${settings.whatsapp.replace(/\D/g, '')}?text=I%20want%20to%20book%20the%20${encodeURIComponent(room.name)}`} 
+              href={formatWhatsAppUrl(settings.whatsapp, `I want to book the ${room.name}`)} 
               target="_blank" 
               rel="noreferrer" 
               className="w-full flex items-center justify-center space-x-2 border border-emerald-500 hover:bg-emerald-50 text-emerald-600 font-bold py-3.5 px-4 rounded-xl transition-smooth text-xs shadow-sm"

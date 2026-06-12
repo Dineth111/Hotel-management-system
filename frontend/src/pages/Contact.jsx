@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { MapPin, Phone, Mail, MessageCircle, Send, ShieldCheck } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { formatWhatsAppUrl } from '../utils/whatsapp';
 
 const Contact = () => {
   const [settings, setSettings] = useState(null);
@@ -123,7 +124,7 @@ const Contact = () => {
             {settings && settings.whatsapp && (
               <div className="border-t border-slate-800 pt-6">
                 <a
-                  href={`https://wa.me/${settings.whatsapp.replace(/\D/g, '')}?text=Hello%2C%20I%20have%20an%20inquiry%20regarding%20reservations.`}
+                  href={formatWhatsAppUrl(settings.whatsapp, 'Hello, I have an inquiry regarding reservations.')}
                   target="_blank"
                   rel="noreferrer"
                   className="w-full flex items-center justify-center space-x-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3.5 px-4 rounded-xl transition-smooth text-xs shadow-md shadow-emerald-500/10"

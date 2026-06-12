@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Check, X, Calendar, User, Info, AlertOctagon, MessageCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { formatWhatsAppUrl } from '../../utils/whatsapp';
 
 const AdminPendingBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -100,7 +101,7 @@ const AdminPendingBookings = () => {
                       <div className="flex items-center gap-1.5 mt-0.5">
                         <span className="text-[10px] text-slate-400 font-semibold">{booking.customerPhone}</span>
                         <a
-                          href={`https://wa.me/${booking.customerPhone.replace(/\D/g, '')}?text=Hello%20${encodeURIComponent(booking.customerName)}%2C%20this%20is%20Hotel%20Lanka%20Pro.%20We%20received%20your%20booking%20request%20${booking.bookingId}%20for%2520the%2520${encodeURIComponent(booking.roomId?.name || '')}.%20It%20is%20currently%20under%20review.`}
+                          href={formatWhatsAppUrl(booking.customerPhone, `Hello ${booking.customerName}, this is Hotel Lanka Pro. We received your booking request ${booking.bookingId} for the ${booking.roomId?.name || ''}. It is currently under review.`)}
                           target="_blank"
                           rel="noreferrer"
                           className="inline-flex items-center text-[9px] font-bold text-emerald-600 hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100/80 px-1.5 py-0.5 rounded-md transition-smooth"

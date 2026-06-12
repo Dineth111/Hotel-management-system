@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Calendar, User, LogIn, LogOut, SlidersHorizontal, Info, Download, MessageCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { exportBookingsToPDF } from '../../utils/pdfExport';
+import { formatWhatsAppUrl } from '../../utils/whatsapp';
 
 const AdminAllBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -134,7 +135,7 @@ const AdminAllBookings = () => {
                         <div className="flex items-center gap-1.5 mt-0.5">
                           <span className="text-[10px] text-slate-400 font-semibold">{booking.customerPhone}</span>
                           <a
-                            href={`https://wa.me/${booking.customerPhone.replace(/\D/g, '')}?text=Hello%20${encodeURIComponent(booking.customerName)}%2C%20this%20is%20Hotel%20Lanka%20Pro.%20Your%20booking%20${booking.bookingId}%20status%2520is%2520now%2520${booking.status}.`}
+                            href={formatWhatsAppUrl(booking.customerPhone, `Hello ${booking.customerName}, this is Hotel Lanka Pro. Your booking ${booking.bookingId} status is now ${booking.status}.`)}
                             target="_blank"
                             rel="noreferrer"
                             className="inline-flex items-center text-[9px] font-bold text-emerald-600 hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100/80 px-1.5 py-0.5 rounded-md transition-smooth"
