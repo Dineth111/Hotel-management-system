@@ -114,7 +114,9 @@ const RoomCompareModal = ({ rooms, onClose, onRemove }) => {
               Array.from({ length: 3 - rooms.length }).map((_, i) => (
                 <div
                   key={i}
-                  className="hidden md:flex flex-col items-center justify-center border border-dashed border-slate-200 rounded-[2rem] p-6 text-center text-slate-400 text-xs font-bold"
+                  onClick={onClose}
+                  className="hidden md:flex flex-col items-center justify-center border border-dashed border-slate-200 hover:border-slate-350 rounded-[2rem] p-6 text-center text-slate-400 text-xs font-bold cursor-pointer hover:bg-slate-50/50 transition-smooth"
+                  title="Click to add another suite"
                 >
                   <div className="h-10 w-10 rounded-full border-2 border-dashed border-slate-200 flex items-center justify-center text-lg">+</div>
                   <p className="mt-2.5">Add another suite to compare</p>

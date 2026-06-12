@@ -142,12 +142,22 @@ const BookingSidebarCard = ({
             )}
 
             <div className="pt-3 border-t border-slate-100 space-y-3">
-              {['customerName', 'customerPhone', 'customerEmail'].map(field => (
-                <div key={field} className="space-y-1">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">{field.replace('customer', '')} Info</label>
-                  <input type={field === 'customerEmail' ? 'email' : 'text'} required value={bookingForm[field]} onChange={e => setBookingForm({ ...bookingForm, [field]: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none" />
-                </div>
-              ))}
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Name Info</label>
+                <input type="text" required value={bookingForm.customerName} onChange={e => setBookingForm({ ...bookingForm, customerName: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide flex justify-between items-center">
+                  <span>Phone Info (WhatsApp Only)</span>
+                  <span className="text-[8px] bg-emerald-50 text-emerald-700 border border-emerald-100 px-1.5 py-0.5 rounded-full uppercase tracking-wider font-bold">WhatsApp required</span>
+                </label>
+                <input type="text" required placeholder="e.g. 0711424377 (WhatsApp number)" value={bookingForm.customerPhone} onChange={e => setBookingForm({ ...bookingForm, customerPhone: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none placeholder:text-slate-350" />
+                <p className="text-[9px] text-slate-400 font-semibold leading-relaxed">Please enter a number registered on WhatsApp to receive booking notifications.</p>
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Email Info</label>
+                <input type="email" required value={bookingForm.customerEmail} onChange={e => setBookingForm({ ...bookingForm, customerEmail: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none" />
+              </div>
             </div>
 
             {costCalculation && (
