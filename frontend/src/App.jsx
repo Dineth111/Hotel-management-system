@@ -50,7 +50,7 @@ const AdminRoute = ({ children }) => {
 // Admin Unified Panel Layout Wrapper
 const AdminLayout = ({ children }) => {
   return (
-    <div className="flex min-h-screen bg-slate-50 w-full">
+    <div className="flex min-h-screen bg-[#f4f7f5] w-full">
       <AdminSidebar />
       <main className="flex-grow p-8 overflow-y-auto">
         {children}
@@ -65,7 +65,7 @@ const AppContent = () => {
   const isAdminPath = location.pathname.startsWith('/admin');
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 text-slate-800">
+    <div className="flex flex-col min-h-screen bg-[#faf9f5] text-slate-800">
       {!isAdminPath && <Navbar />}
       
       <main className="flex-grow">

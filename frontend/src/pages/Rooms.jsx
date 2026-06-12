@@ -182,6 +182,8 @@ const Rooms = () => {
           rooms={compareRooms}
           onClose={() => setShowCompareModal(false)}
           onRemove={handleRemoveCompare}
+          allRooms={rooms}
+          onAdd={handleToggleCompare}
         />
       )}
     </div>

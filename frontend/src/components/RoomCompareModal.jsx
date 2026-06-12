@@ -3,8 +3,10 @@ import { X, CheckCircle2 } from 'lucide-react';
 import { getImageUrl } from '../utils/image';
 import { Link } from 'react-router-dom';
 
-const RoomCompareModal = ({ rooms, onClose, onRemove }) => {
+const RoomCompareModal = ({ rooms, onClose, onRemove, allRooms = [], onAdd }) => {
+  const [showSelector, setShowSelector] = React.useState(false);
   if (rooms.length === 0) return null;
+  const availableRooms = allRooms.filter(r => !rooms.some(cr => cr._id === r._id) && r.status !== 'Maintenance');
 
   // Gather unique amenities across all compared rooms to compare side by side
   const allAmenities = Array.from(
@@ -114,12 +116,46 @@ const RoomCompareModal = ({ rooms, onClose, onRemove }) => {
               Array.from({ length: 3 - rooms.length }).map((_, i) => (
                 <div
                   key={i}
-                  onClick={onClose}
-                  className="hidden md:flex flex-col items-center justify-center border border-dashed border-slate-200 hover:border-slate-350 rounded-[2rem] p-6 text-center text-slate-400 text-xs font-bold cursor-pointer hover:bg-slate-50/50 transition-smooth"
-                  title="Click to add another suite"
+                  className="hidden md:flex flex-col items-center justify-center border border-dashed border-slate-200 rounded-[2rem] p-6 text-center text-slate-400 text-xs font-bold bg-slate-50/20 min-h-[300px]"
                 >
-                  <div className="h-10 w-10 rounded-full border-2 border-dashed border-slate-200 flex items-center justify-center text-lg">+</div>
-                  <p className="mt-2.5">Add another suite to compare</p>
+                  {!showSelector ? (
+                    <div
+                      onClick={() => setShowSelector(true)}
+                      className="flex flex-col items-center justify-center cursor-pointer hover:text-slate-600 transition-smooth"
+                    >
+                      <div className="h-10 w-10 rounded-full border-2 border-dashed border-slate-300 flex items-center justify-center text-lg font-normal">+</div>
+                      <p className="mt-2.5">Add another suite</p>
+                    </div>
+                  ) : (
+                    <div className="w-full space-y-2.5">
+                      <p className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider">Choose suite:</p>
+                      <div className="max-h-48 overflow-y-auto space-y-1.5 pr-1">
+                        {availableRooms.length === 0 ? (
+                          <p className="text-[10px] text-slate-400 font-medium">No other suites available</p>
+                        ) : (
+                          availableRooms.map((room) => (
+                            <button
+                              key={room._id}
+                              onClick={() => {
+                                onAdd(room);
+                                setShowSelector(false);
+                              }}
+                              className="w-full text-left p-2.5 hover:bg-emerald-50 rounded-xl border border-slate-100 hover:border-emerald-100 transition-smooth flex items-center justify-between text-[11px] font-semibold text-slate-700 hover:text-emerald-700"
+                            >
+                              <span className="truncate max-w-[110px]">{room.name}</span>
+                              <span className="text-slate-500 text-[10px] shrink-0 font-bold">LKR {room.pricePerNight}</span>
+                            </button>
+                          ))
+                        )}
+                      </div>
+                      <button
+                        onClick={() => setShowSelector(false)}
+                        className="text-slate-400 hover:text-slate-600 text-[10px] underline font-bold"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  )}
                 </div>
               ))}
           </div>

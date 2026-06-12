@@ -7,7 +7,7 @@
 @layer base {
   body {
     font-family: 'Inter', sans-serif;
-    @apply bg-slate-50 text-slate-900 antialiased selection:bg-primary-100 selection:text-primary-900;
+    @apply bg-[#faf9f5] text-slate-900 antialiased selection:bg-primary-100 selection:text-primary-900;
   }
 
   h1, h2, h3, h4, h5, h6 {

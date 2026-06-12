@@ -24,28 +24,19 @@ const BookingSidebarCard = ({
   const [validating, setValidating] = useState(false);
 
   const handleAddOnToggle = (name) => {
-    const current = bookingForm.addOns || [];
-    const updated = current.includes(name) ? current.filter(a => a !== name) : [...current, name];
-    setBookingForm({ ...bookingForm, addOns: updated });
+    const cur = bookingForm.addOns || [];
+    setBookingForm({ ...bookingForm, addOns: cur.includes(name) ? cur.filter(a => a !== name) : [...cur, name] });
   };
 
   const baseRoomTotal = costCalculation ? costCalculation.totalAmount : 0;
   const nights = costCalculation ? costCalculation.nights : 0;
   const selectedAddOns = bookingForm.addOns || [];
-  
   const addOnsTotal = selectedAddOns.reduce((total, name) => {
     const item = ADD_ONS_CATALOG.find(a => a.name === name);
     return total + (item ? (item.perDay ? item.price * nights : item.price) : 0);
   }, 0);
 
-  let discountAmount = 0;
-  if (appliedCoupon) {
-    discountAmount = appliedCoupon.discountType === 'percentage'
-      ? Math.round((baseRoomTotal * appliedCoupon.discountValue) / 100)
-      : appliedCoupon.discountValue;
-    if (discountAmount > baseRoomTotal) discountAmount = baseRoomTotal;
-  }
-
+  const discountAmount = appliedCoupon ? Math.min(baseRoomTotal, appliedCoupon.discountType === 'percentage' ? Math.round((baseRoomTotal * appliedCoupon.discountValue) / 100) : appliedCoupon.discountValue) : 0;
   const finalTotalAmount = baseRoomTotal - discountAmount + addOnsTotal;
 
   const handleApplyCoupon = async () => {
@@ -148,11 +139,20 @@ const BookingSidebarCard = ({
               </div>
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide flex justify-between items-center">
-                  <span>Phone Info (WhatsApp Only)</span>
-                  <span className="text-[8px] bg-emerald-50 text-emerald-700 border border-emerald-100 px-1.5 py-0.5 rounded-full uppercase tracking-wider font-bold">WhatsApp required</span>
+                  <span className="text-emerald-700">Phone Info (WhatsApp-Available Only)</span>
+                  <span className="text-[8px] bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-full uppercase tracking-wider font-bold animate-pulse">Required</span>
                 </label>
-                <input type="text" required placeholder="e.g. 0711424377 (WhatsApp number)" value={bookingForm.customerPhone} onChange={e => setBookingForm({ ...bookingForm, customerPhone: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none placeholder:text-slate-350" />
-                <p className="text-[9px] text-slate-400 font-semibold leading-relaxed">Please enter a number registered on WhatsApp to receive booking notifications.</p>
+                <input
+                  type="text"
+                  required
+                  placeholder="ENTER ONLY WHATSAPP AVAILABLE NUMBER"
+                  value={bookingForm.customerPhone}
+                  onChange={e => setBookingForm({ ...bookingForm, customerPhone: e.target.value })}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-emerald-500 placeholder:text-red-400/80 font-bold"
+                />
+                <p className="text-[9px] text-red-500 font-bold leading-relaxed flex items-center gap-1">
+                  ⚠️ ENTER ONLY WHATSAPP AVAILABLE NUMBER (Notifications will be sent via WhatsApp)
+                </p>
               </div>
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Email Info</label>
