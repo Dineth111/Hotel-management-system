@@ -83,7 +83,7 @@ const FAQ = () => {
         </div>
 
         {/* Sidebar support card */}
-        <div className="bg-gradient-to-br from-primary-950 to-primary-900 text-white p-6 rounded-3xl shadow-lg h-fit space-y-6 relative overflow-hidden">
+        <div className="bg-gradient-to-br from-primary-900 to-primary-800 text-white p-6 rounded-3xl shadow-lg h-fit space-y-6 relative overflow-hidden">
           <div className="absolute -bottom-8 -right-8 h-24 w-24 bg-primary-800/30 rounded-full blur-xl pointer-events-none" />
           
           <div className="space-y-2">
