@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Check, X, Calendar, User, Info, AlertOctagon, MessageCircle } from 'lucide-react';
+import { Check, X, Calendar, User, Info, AlertOctagon, MessageSquare } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 const AdminPendingBookings = () => {
@@ -100,14 +100,12 @@ const AdminPendingBookings = () => {
                       <div className="flex items-center gap-1.5 mt-0.5">
                         <span className="text-[10px] text-slate-400 font-semibold">{booking.customerPhone}</span>
                         <a
-                          href={`https://wa.me/${booking.customerPhone.replace(/\D/g, '')}?text=Hello%20${encodeURIComponent(booking.customerName)}%2C%20this%20is%20Hotel%20Lanka%20Pro.%20We%20received%20your%20booking%20request%20${booking.bookingId}%20for%20the%20${encodeURIComponent(booking.roomId?.name || '')}.%20It%20is%20currently%20under%20review.`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center text-[9px] font-bold text-emerald-600 hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100/80 px-1.5 py-0.5 rounded-md transition-smooth"
-                          title="Send WhatsApp update"
+                          href={`sms:${booking.customerPhone.replace(/\D/g, '')}?body=Hello%20${encodeURIComponent(booking.customerName)}%2C%20this%20is%20Hotel%20Lanka%20Pro.%20We%20received%20your%20booking%20request%20${booking.bookingId}%20for%20the%20${encodeURIComponent(booking.roomId?.name || '')}.%20It%20is%20currently%20under%20review.`}
+                          className="inline-flex items-center text-[9px] font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-1.5 py-0.5 rounded-md transition-smooth"
+                          title="Send SMS notification"
                         >
-                          <MessageCircle className="h-3 w-3 shrink-0" />
-                          <span>Notify</span>
+                          <MessageSquare className="h-3 w-3 shrink-0" />
+                          <span>Send SMS</span>
                         </a>
                       </div>
                     </td>
