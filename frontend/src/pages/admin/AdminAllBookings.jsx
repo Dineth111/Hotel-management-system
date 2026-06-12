@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Calendar, User, LogIn, LogOut, SlidersHorizontal, Info } from 'lucide-react';
+import { Calendar, User, LogIn, LogOut, SlidersHorizontal, Info, Download } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { exportBookingsToPDF } from '../../utils/pdfExport';
 
 const AdminAllBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -69,21 +70,32 @@ const AdminAllBookings = () => {
           <p className="text-slate-500 text-sm">Browse, filter, and track check-in or checkout states across all bookings.</p>
         </div>
         
-        {/* Status Filter Dropdown */}
-        <div className="relative flex items-center gap-2">
-          <SlidersHorizontal className="h-4.5 w-4.5 text-slate-400" />
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-white border border-slate-200/80 rounded-2xl px-4 py-2.5 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-100 focus:border-primary-500 transition-smooth"
+        {/* Actions bar */}
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => exportBookingsToPDF(bookings)}
+            disabled={bookings.length === 0}
+            className="bg-primary-600 hover:bg-primary-700 disabled:opacity-50 text-white font-bold py-2.5 px-4 rounded-2xl text-xs flex items-center gap-2 shadow-md hover:shadow-lg transition-smooth cursor-pointer"
           >
-            <option value="">All Bookings</option>
-            <option value="Pending">Pending</option>
-            <option value="Approved">Approved</option>
-            <option value="CheckedIn">Checked In</option>
-            <option value="CheckedOut">Checked Out</option>
-            <option value="Cancelled">Cancelled</option>
-          </select>
+            <Download className="h-4 w-4" />
+            <span>Export PDF</span>
+          </button>
+          
+          <div className="relative flex items-center gap-2">
+            <SlidersHorizontal className="h-4.5 w-4.5 text-slate-400" />
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="bg-white border border-slate-200/80 rounded-2xl px-4 py-2.5 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-100 focus:border-primary-500 transition-smooth"
+            >
+              <option value="">All Bookings</option>
+              <option value="Pending">Pending</option>
+              <option value="Approved">Approved</option>
+              <option value="CheckedIn">Checked In</option>
+              <option value="CheckedOut">Checked Out</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
         </div>
       </div>
 
