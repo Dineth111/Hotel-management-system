@@ -18,6 +18,7 @@ import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import MyBookings from './pages/MyBookings';
+import FAQ from './pages/FAQ';
 
 // Admin Pages
 import AdminLogin from './pages/admin/AdminLogin';
@@ -28,6 +29,8 @@ import AdminRooms from './pages/admin/AdminRooms';
 import AdminRoomsEdit from './pages/admin/AdminRoomsEdit';
 import AdminContactMessages from './pages/admin/AdminContactMessages';
 import AdminSettings from './pages/admin/AdminSettings';
+import AdminCoupons from './pages/admin/AdminCoupons';
+import AdminReviews from './pages/admin/AdminReviews';
 
 // Route Guards
 const CustomerRoute = ({ children }) => {
@@ -76,6 +79,7 @@ const AppContent = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/faq" element={<FAQ />} />
           
           <Route path="/my-bookings" element={<CustomerRoute><MyBookings /></CustomerRoute>} />
 
@@ -86,6 +90,8 @@ const AppContent = () => {
           <Route path="/admin/bookings/all" element={<AdminRoute><AdminLayout><AdminAllBookings /></AdminLayout></AdminRoute>} />
           <Route path="/admin/rooms" element={<AdminRoute><AdminLayout><AdminRooms /></AdminLayout></AdminRoute>} />
           <Route path="/admin/rooms/edit/:id" element={<AdminRoute><AdminLayout><AdminRoomsEdit /></AdminLayout></AdminRoute>} />
+          <Route path="/admin/coupons" element={<AdminRoute><AdminLayout><AdminCoupons /></AdminLayout></AdminRoute>} />
+          <Route path="/admin/reviews" element={<AdminRoute><AdminLayout><AdminReviews /></AdminLayout></AdminRoute>} />
           <Route path="/admin/contact-messages" element={<AdminRoute><AdminLayout><AdminContactMessages /></AdminLayout></AdminRoute>} />
           <Route path="/admin/settings" element={<AdminRoute><AdminLayout><AdminSettings /></AdminLayout></AdminRoute>} />
 

@@ -4,24 +4,29 @@ import axios from 'axios';
 import { Maximize, Bed, Users, Info } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { getImageUrl } from '../utils/image';
+import RoomCompareModal from '../components/RoomCompareModal';
 
 const Rooms = () => {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [compareRooms, setCompareRooms] = useState([]);
+  const [showCompareModal, setShowCompareModal] = useState(false);
 
   useEffect(() => {
-    const fetchRooms = async () => {
-      try {
-        const res = await axios.get('/rooms');
-        setRooms(res.data);
-      } catch (err) {
-        toast.error('Failed to load rooms');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchRooms();
+    axios.get('/rooms')
+      .then(res => setRooms(res.data))
+      .catch(() => toast.error('Failed to load rooms'))
+      .finally(() => setLoading(false));
   }, []);
+
+  const handleToggleCompare = (room) => {
+    const isCompared = compareRooms.some(r => r._id === room._id);
+    if (isCompared) return setCompareRooms(compareRooms.filter(r => r._id !== room._id));
+    if (compareRooms.length >= 3) return toast.error('You can compare a maximum of 3 suites at once');
+    setCompareRooms([...compareRooms, room]);
+  };
+
+  const handleRemoveCompare = (id) => setCompareRooms(compareRooms.filter(r => r._id !== id));
 
   if (loading) {
     return (
@@ -60,15 +65,36 @@ const Rooms = () => {
                 />
                 
                 {/* Status indicator badges */}
-                <div className="absolute top-4 left-4">
+                <div className="absolute top-4 left-4 flex flex-col gap-2">
                   {room.status === 'Maintenance' ? (
                     <span className="bg-red-500/90 backdrop-blur-md text-white text-[10px] font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow">
                       Maintenance
                     </span>
                   ) : (
-                    <span className="bg-emerald-500/95 backdrop-blur-md text-white text-[10px] font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow">
-                      Available
-                    </span>
+                    <>
+                      <span className="bg-emerald-500/95 backdrop-blur-md text-white text-[10px] font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow">
+                        Available
+                      </span>
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleToggleCompare(room);
+                        }}
+                        className={`text-[9px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow backdrop-blur transition-all flex items-center gap-1 ${
+                          compareRooms.some(r => r._id === room._id)
+                            ? 'bg-primary-500 text-white border border-primary-400'
+                            : 'bg-slate-900/80 text-slate-200 hover:text-white border border-white/10'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={compareRooms.some(r => r._id === room._id)}
+                          onChange={() => {}}
+                          className="h-3 w-3 rounded accent-primary-500 border-none pointer-events-none"
+                        />
+                        <span>Compare</span>
+                      </button>
+                    </>
                   )}
                 </div>
 
@@ -125,6 +151,38 @@ const Rooms = () => {
             </div>
           ))}
         </div>
+      )}
+
+      {/* Floating Compare Bar */}
+      {compareRooms.length > 0 && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-950/95 text-white py-4 px-6 rounded-full shadow-2xl flex items-center space-x-6 border border-white/10 backdrop-blur">
+          <span className="text-xs font-bold tracking-wide">
+            {compareRooms.length} suite{compareRooms.length > 1 ? 's' : ''} selected
+          </span>
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={() => setShowCompareModal(true)}
+              className="bg-primary-500 hover:bg-primary-600 text-white font-bold py-2 px-5 rounded-full text-xs transition-smooth shadow-lg"
+            >
+              Compare Now
+            </button>
+            <button
+              onClick={() => setCompareRooms([])}
+              className="text-xs font-bold text-slate-400 hover:text-white transition-colors"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Compare Modal overlay */}
+      {showCompareModal && (
+        <RoomCompareModal
+          rooms={compareRooms}
+          onClose={() => setShowCompareModal(false)}
+          onRemove={handleRemoveCompare}
+        />
       )}
     </div>
   );

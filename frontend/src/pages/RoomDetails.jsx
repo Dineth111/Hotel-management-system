@@ -6,6 +6,7 @@ import { Check, ArrowLeft, Maximize, Bed, Users } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { getImageUrl } from '../utils/image';
 import BookingSidebarCard from '../components/BookingSidebarCard';
+import RoomReviews from '../components/RoomReviews';
 
 const RoomDetails = () => {
   const { id } = useParams();
@@ -140,6 +141,8 @@ const RoomDetails = () => {
               ))}
             </div>
           </div>
+
+          <RoomReviews roomId={room._id} />
         </div>
 
         <BookingSidebarCard

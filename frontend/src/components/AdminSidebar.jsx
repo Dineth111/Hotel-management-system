@@ -9,7 +9,9 @@ import {
   MailWarning, 
   Settings, 
   LogOut,
-  ShieldCheck
+  ShieldCheck,
+  Ticket,
+  MessageSquare
 } from 'lucide-react';
 
 const AdminSidebar = () => {
@@ -26,6 +28,8 @@ const AdminSidebar = () => {
     { name: 'Pending Bookings', path: '/admin/bookings/pending', icon: CalendarClock },
     { name: 'All Bookings', path: '/admin/bookings/all', icon: CalendarRange },
     { name: 'Rooms List', path: '/admin/rooms', icon: BedDouble },
+    { name: 'Promo Codes', path: '/admin/coupons', icon: Ticket },
+    { name: 'Guest Reviews', path: '/admin/reviews', icon: MessageSquare },
     { name: 'Contact Messages', path: '/admin/contact-messages', icon: MailWarning },
     { name: 'Hotel Settings', path: '/admin/settings', icon: Settings },
   ];

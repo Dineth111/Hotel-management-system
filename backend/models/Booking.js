@@ -56,6 +56,22 @@ const bookingSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  addOns: [{
+    name: { type: String },
+    price: { type: Number }
+  }],
+  addOnsTotal: {
+    type: Number,
+    default: 0
+  },
+  discountAmount: {
+    type: Number,
+    default: 0
+  },
+  couponCode: {
+    type: String,
+    default: ''
+  },
   createdAt: {
     type: Date,
     default: Date.now

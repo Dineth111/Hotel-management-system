@@ -1,5 +1,7 @@
-import React from 'react';
-import { ShieldAlert, MessageCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import axios from 'axios';
+import { ShieldAlert, MessageCircle, Sparkles, CheckCircle2, Ticket, X } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 const BookingSidebarCard = ({
   room,
@@ -10,6 +12,81 @@ const BookingSidebarCard = ({
   handleBookingSubmit,
   costCalculation
 }) => {
+  const [couponInput, setCouponInput] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [validating, setValidating] = useState(false);
+
+  const addOnsCatalog = [
+    { name: 'Airport Transfer', price: 5000, desc: 'Private airport shuttle' },
+    { name: 'Half-Board Meals', price: 3500, desc: 'LKR 3,500/day premium dining', perDay: true },
+    { name: 'Romantic Welcome', price: 4000, desc: 'Flowers & fruit welcome platter' }
+  ];
+
+  const handleAddOnToggle = (name) => {
+    const currentAddOns = bookingForm.addOns || [];
+    let updated;
+    if (currentAddOns.includes(name)) {
+      updated = currentAddOns.filter(a => a !== name);
+    } else {
+      updated = [...currentAddOns, name];
+    }
+    setBookingForm({ ...bookingForm, addOns: updated });
+  };
+
+  const baseRoomTotal = costCalculation ? costCalculation.totalAmount : 0;
+  const nights = costCalculation ? costCalculation.nights : 0;
+
+  // Calculate live add-ons total
+  let addOnsTotal = 0;
+  const selectedAddOns = bookingForm.addOns || [];
+  selectedAddOns.forEach(name => {
+    if (name === 'Airport Transfer') addOnsTotal += 5000;
+    if (name === 'Half-Board Meals') addOnsTotal += 3500 * nights;
+    if (name === 'Romantic Welcome') addOnsTotal += 4000;
+  });
+
+  // Calculate live coupon discount
+  let discountAmount = 0;
+  if (appliedCoupon) {
+    if (appliedCoupon.discountType === 'percentage') {
+      discountAmount = Math.round((baseRoomTotal * appliedCoupon.discountValue) / 100);
+    } else {
+      discountAmount = appliedCoupon.discountValue;
+    }
+    if (discountAmount > baseRoomTotal) {
+      discountAmount = baseRoomTotal;
+    }
+  }
+
+  const finalTotalAmount = baseRoomTotal - discountAmount + addOnsTotal;
+
+  const handleApplyCoupon = async () => {
+    if (!couponInput) return;
+    setValidating(true);
+    try {
+      const res = await axios.post('/coupons/validate', {
+        code: couponInput,
+        roomPrice: baseRoomTotal
+      });
+      setAppliedCoupon(res.data);
+      setBookingForm(prev => ({ ...prev, couponCode: res.data.code }));
+      toast.success(`Coupon applied: LKR ${res.data.discountAmount} off!`);
+    } catch (err) {
+      setAppliedCoupon(null);
+      setBookingForm(prev => ({ ...prev, couponCode: '' }));
+      toast.error(err.response?.data?.message || 'Invalid coupon code');
+    } finally {
+      setValidating(false);
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponInput('');
+    setBookingForm(prev => ({ ...prev, couponCode: '' }));
+    toast.success('Coupon removed');
+  };
+
   return (
     <div className="space-y-6">
       <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-6">
@@ -24,7 +101,7 @@ const BookingSidebarCard = ({
             <span>Currently undergoing maintenance and bookings are disabled.</span>
           </div>
         ) : (
-          <form onSubmit={handleBookingSubmit} className="space-y-4">
+          <form onSubmit={handleBookingSubmit} className="space-y-5">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Check-In</label>
@@ -41,7 +118,79 @@ const BookingSidebarCard = ({
               <input type="number" required min="1" max={room.capacity} value={bookingForm.guests} onChange={e => setBookingForm({ ...bookingForm, guests: Number(e.target.value) })} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold focus:outline-none" />
             </div>
 
-            <div className="pt-4 border-t border-slate-100 space-y-3">
+            {/* Custom Extra Add-ons section */}
+            {costCalculation && (
+              <div className="space-y-2.5 pt-2">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide flex items-center gap-1">
+                  <Sparkles className="h-3.5 w-3.5 text-luxury-500" />
+                  <span>Optional Add-on Packages</span>
+                </label>
+                <div className="space-y-2">
+                  {addOnsCatalog.map((addon) => {
+                    const isChecked = selectedAddOns.includes(addon.name);
+                    const displayPrice = addon.perDay ? addon.price * nights : addon.price;
+                    return (
+                      <div
+                        key={addon.name}
+                        onClick={() => handleAddOnToggle(addon.name)}
+                        className={`flex items-start justify-between p-3 rounded-2xl border text-xs cursor-pointer transition-all ${
+                          isChecked ? 'border-primary-500 bg-primary-50/20' : 'border-slate-100 hover:border-slate-200 bg-slate-50/20'
+                        }`}
+                      >
+                        <div className="space-y-0.5 pr-2">
+                          <p className="font-bold text-slate-800 flex items-center gap-1.5">
+                            {isChecked && <CheckCircle2 className="h-4 w-4 text-primary-500 shrink-0" />}
+                            <span>{addon.name}</span>
+                          </p>
+                          <p className="text-[10px] text-slate-400 font-semibold">{addon.desc}</p>
+                        </div>
+                        <span className="font-bold text-slate-800 shrink-0">LKR {displayPrice.toLocaleString()}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Promo Code section */}
+            {costCalculation && (
+              <div className="space-y-2 pt-2">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide flex items-center gap-1">
+                  <Ticket className="h-3.5 w-3.5 text-primary-500" />
+                  <span>Promo Code</span>
+                </label>
+                {appliedCoupon ? (
+                  <div className="flex items-center justify-between bg-emerald-50 border border-emerald-100 p-3 rounded-2xl text-xs">
+                    <div className="font-bold text-emerald-800">
+                      <span>Code: {appliedCoupon.code} ({appliedCoupon.discountType === 'percentage' ? `${appliedCoupon.discountValue}%` : `LKR ${appliedCoupon.discountValue}`} off)</span>
+                    </div>
+                    <button type="button" onClick={handleRemoveCoupon} className="text-slate-400 hover:text-red-500 transition-colors">
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="ENTER CODE"
+                      value={couponInput}
+                      onChange={e => setCouponInput(e.target.value.toUpperCase())}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold uppercase tracking-wider focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      disabled={validating || !couponInput}
+                      onClick={handleApplyCoupon}
+                      className="bg-slate-900 hover:bg-primary-500 disabled:bg-slate-200 disabled:text-slate-400 text-white font-bold px-4 rounded-xl text-xs transition-smooth"
+                    >
+                      {validating ? '...' : 'Apply'}
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="pt-3 border-t border-slate-100 space-y-3">
               {['customerName', 'customerPhone', 'customerEmail'].map(field => (
                 <div key={field} className="space-y-1">
                   <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">{field.replace('customer', '')} Info</label>
@@ -51,14 +200,26 @@ const BookingSidebarCard = ({
             </div>
 
             {costCalculation && (
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-2 text-xs font-bold">
+              <div className="bg-slate-50 p-4.5 rounded-2xl border border-slate-100 space-y-2.5 text-xs font-bold">
                 <div className="flex justify-between text-slate-500">
-                  <span>LKR {room.pricePerNight} x {costCalculation.nights} nights</span>
-                  <span>LKR {costCalculation.totalAmount}</span>
+                  <span>Room Charge ({nights} nights)</span>
+                  <span>LKR {baseRoomTotal.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between border-t border-slate-200 pt-2 text-sm text-slate-800 font-extrabold">
+                {discountAmount > 0 && (
+                  <div className="flex justify-between text-emerald-600">
+                    <span>Discount Applied</span>
+                    <span>- LKR {discountAmount.toLocaleString()}</span>
+                  </div>
+                )}
+                {addOnsTotal > 0 && (
+                  <div className="flex justify-between text-primary-600">
+                    <span>Add-ons Total</span>
+                    <span>+ LKR {addOnsTotal.toLocaleString()}</span>
+                  </div>
+                )}
+                <div className="flex justify-between border-t border-slate-200 pt-2.5 text-sm text-slate-800 font-extrabold">
                   <span>Total Amount</span>
-                  <span>LKR {costCalculation.totalAmount}</span>
+                  <span>LKR {finalTotalAmount.toLocaleString()}</span>
                 </div>
               </div>
             )}

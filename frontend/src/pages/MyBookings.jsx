@@ -1,62 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Calendar, CheckCircle2, Clock, AlertTriangle, XCircle, FileText, Info, DollarSign } from 'lucide-react';
+import { Calendar, CheckCircle2, Clock, AlertTriangle, XCircle, FileText, Info, Star } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import LeaveReviewModal from '../components/LeaveReviewModal';
+
+const STATUS_CONFIGS = {
+  Pending: { badgeClass: "bg-amber-50 text-amber-700 border-amber-200/60", borderAccent: "border-l-amber-500", icon: Clock },
+  Approved: { badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200/60", borderAccent: "border-l-emerald-500", icon: CheckCircle2 },
+  Confirmed: { badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200/60", borderAccent: "border-l-emerald-500", icon: CheckCircle2 },
+  CheckedIn: { badgeClass: "bg-blue-50 text-blue-700 border-blue-200/60", borderAccent: "border-l-blue-500", icon: Info },
+  CheckedOut: { badgeClass: "bg-slate-50 text-slate-600 border-slate-200/60", borderAccent: "border-l-slate-400", icon: FileText },
+  Cancelled: { badgeClass: "bg-red-50 text-red-700 border-red-200/60", borderAccent: "border-l-red-500", icon: XCircle }
+};
 
 const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState(null);
 
-  useEffect(() => {
-    const fetchMyBookings = async () => {
-      try {
-        const res = await axios.get('/bookings/my-bookings');
-        setBookings(res.data);
-      } catch (err) {
-        toast.error('Failed to load your booking history');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchMyBookings();
-  }, []);
-
-  const getStatusConfig = (status) => {
-    switch (status) {
-      case 'Pending':
-        return {
-          badgeClass: "bg-amber-50 text-amber-700 border-amber-200/60",
-          borderAccent: "border-l-amber-500",
-          icon: Clock
-        };
-      case 'Approved':
-      case 'Confirmed':
-        return {
-          badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200/60",
-          borderAccent: "border-l-emerald-500",
-          icon: CheckCircle2
-        };
-      case 'CheckedIn':
-        return {
-          badgeClass: "bg-blue-50 text-blue-700 border-blue-200/60",
-          borderAccent: "border-l-blue-500",
-          icon: Info
-        };
-      case 'CheckedOut':
-        return {
-          badgeClass: "bg-slate-50 text-slate-600 border-slate-200/60",
-          borderAccent: "border-l-slate-400",
-          icon: FileText
-        };
-      case 'Cancelled':
-      default:
-        return {
-          badgeClass: "bg-red-50 text-red-700 border-red-200/60",
-          borderAccent: "border-l-red-500",
-          icon: XCircle
-        };
+  const fetchMyBookings = async () => {
+    try {
+      const res = await axios.get('/bookings/my-bookings');
+      setBookings(res.data);
+    } catch (err) {
+      toast.error('Failed to load your booking history');
+    } finally {
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchMyBookings();
+  }, []);
 
   if (loading) {
     return (
@@ -67,7 +43,7 @@ const MyBookings = () => {
   }
 
   const pendingCount = bookings.filter(b => b.status === 'Pending').length;
-  const activeCount = bookings.filter(b => ['Approved', 'Confirmed', 'CheckedIn'].length > 0 && ['Approved', 'Confirmed', 'CheckedIn'].includes(b.status)).length;
+  const activeCount = bookings.filter(b => ['Approved', 'Confirmed', 'CheckedIn'].includes(b.status)).length;
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-10 font-sans">
@@ -122,7 +98,7 @@ const MyBookings = () => {
       ) : (
         <div className="space-y-6">
           {bookings.map((booking) => {
-            const config = getStatusConfig(booking.status);
+            const config = STATUS_CONFIGS[booking.status] || STATUS_CONFIGS.Cancelled;
             const StatusIcon = config.icon;
             return (
               <div
@@ -164,6 +140,21 @@ const MyBookings = () => {
                     </div>
                   </div>
 
+                  {booking.status === 'CheckedOut' && (
+                    <div className="pt-1">
+                      <button
+                        onClick={() => {
+                          setSelectedBooking(booking);
+                          setShowReviewModal(true);
+                        }}
+                        className="px-4 py-2 bg-gradient-to-r from-luxury-400 to-luxury-500 hover:from-luxury-500 hover:to-luxury-600 text-white rounded-xl text-[11px] font-bold uppercase tracking-wider shadow-sm hover:shadow transition-smooth cursor-pointer flex items-center gap-1.5"
+                      >
+                        <Star className="h-3.5 w-3.5 fill-white" />
+                        Leave a Review
+                      </button>
+                    </div>
+                  )}
+
                   {booking.status === 'Cancelled' && booking.rejectionReason && (
                     <div className="bg-red-50/50 text-red-800 p-3.5 rounded-2xl flex items-start space-x-2.5 border border-red-100/60 text-xs">
                       <AlertTriangle className="h-4.5 w-4.5 shrink-0 text-red-500 mt-0.5" />
@@ -188,6 +179,21 @@ const MyBookings = () => {
             );
           })}
         </div>
+      )}
+
+      {showReviewModal && selectedBooking && (
+        <LeaveReviewModal
+          booking={selectedBooking}
+          onClose={() => {
+            setShowReviewModal(false);
+            setSelectedBooking(null);
+          }}
+          onSuccess={() => {
+            setShowReviewModal(false);
+            setSelectedBooking(null);
+            fetchMyBookings(); // refresh page data
+          }}
+        />
       )}
     </div>
   );

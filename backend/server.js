@@ -17,6 +17,8 @@ const contactRoutes = require('./routes/contact');
 const adminContactRoutes = require('./routes/adminContact');
 const settingsRoutes = require('./routes/settings');
 const adminSettingsRoutes = require('./routes/adminSettings');
+const couponRoutes = require('./routes/coupons');
+const reviewsRoutes = require('./routes/reviews');
 
 // Initialize express app
 const app = express();
@@ -69,6 +71,8 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/admin/contact-messages', adminContactRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/admin/settings', adminSettingsRoutes);
+app.use('/api/coupons', couponRoutes);
+app.use('/api/reviews', reviewsRoutes);
 
 // Welcome / Status Route
 app.get('/', (req, res) => {

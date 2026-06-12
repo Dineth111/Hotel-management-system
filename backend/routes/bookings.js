@@ -70,7 +70,7 @@ Hotel Lanka Pro System`
  */
 router.post('/', async (req, res) => {
   try {
-    const { roomId, customerName, customerPhone, customerEmail, checkIn, checkOut, guests } = req.body;
+    const { roomId, customerName, customerPhone, customerEmail, checkIn, checkOut, guests, addOns, couponCode } = req.body;
 
     if (!roomId || !customerName || !customerPhone || !customerEmail || !checkIn || !checkOut || !guests) {
       return res.status(400).json({ message: 'All booking fields are required' });
@@ -101,12 +101,54 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ message: `Number of guests exceeds room capacity (${room.capacity})` });
     }
 
-    // Calculate nights & amount securely on backend
+    // Calculate nights & base amount securely
     const timeDiff = checkOutDate.getTime() - checkInDate.getTime();
     const nights = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-    const totalAmount = nights * room.pricePerNight;
+    const baseRoomTotal = nights * room.pricePerNight;
 
-    // Create booking (schema pre-save hook will automatically append sequential bookingId)
+    // Securely calculate Add-ons
+    const ADD_ONS_CATALOG = {
+      'Airport Transfer': 5000,
+      'Half-Board Meals': 3500,
+      'Romantic Welcome': 4000
+    };
+    let addOnsList = [];
+    let addOnsTotal = 0;
+    if (addOns && Array.isArray(addOns)) {
+      addOns.forEach(addonName => {
+        if (ADD_ONS_CATALOG[addonName] !== undefined) {
+          let price = ADD_ONS_CATALOG[addonName];
+          if (addonName === 'Half-Board Meals') {
+            price = price * nights;
+          }
+          addOnsList.push({ name: addonName, price });
+          addOnsTotal += price;
+        }
+      });
+    }
+
+    // Apply Coupon discount
+    let discountAmount = 0;
+    let appliedCouponCode = '';
+    if (couponCode) {
+      const Coupon = require('../models/Coupon');
+      const coupon = await Coupon.findOne({ code: couponCode.toUpperCase(), isActive: true });
+      if (coupon && (!coupon.expiresAt || new Date(coupon.expiresAt) >= new Date())) {
+        if (coupon.discountType === 'percentage') {
+          discountAmount = Math.round((baseRoomTotal * coupon.discountValue) / 100);
+        } else {
+          discountAmount = coupon.discountValue;
+        }
+        if (discountAmount > baseRoomTotal) {
+          discountAmount = baseRoomTotal;
+        }
+        appliedCouponCode = coupon.code;
+      }
+    }
+
+    const totalAmount = baseRoomTotal - discountAmount + addOnsTotal;
+
+    // Create booking
     const booking = await Booking.create({
       userId: req.session.userId,
       roomId,
@@ -117,8 +159,12 @@ router.post('/', async (req, res) => {
       checkOut: checkOutDate,
       guests,
       nights,
+      addOns: addOnsList,
+      addOnsTotal,
+      discountAmount,
+      couponCode: appliedCouponCode,
       totalAmount,
-      status: 'Pending' // Room is not blocked at this stage
+      status: 'Pending'
     });
 
     // Send asynchronous email notification in background

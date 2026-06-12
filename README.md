@@ -25,13 +25,7 @@ A complete Hotel Booking System built using the MERN Stack.
    ```bash
    npm install
    ```
-4. Create a `.env` file inside the `backend` folder with the following variables:
-   ```env
-   PORT=5000
-   MONGO_URI=mongodb+srv://Hotel:TQY6V48V0bQg76YX@cluster0.yypadkc.mongodb.net/hotel_lanka_pro?appName=Cluster0
-   SESSION_SECRET=hotel_lanka_pro_session_secret_998877
-   EMAIL_USER=your-email@gmail.com
-   EMAIL_PASS=your-gmail-app-password
+4. 
    ```
 
 ### 2. Database Seeding
