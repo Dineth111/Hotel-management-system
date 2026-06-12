@@ -25,6 +25,15 @@ const AdminPendingBookings = () => {
     fetchPending();
   }, []);
 
+  const handleSendSMS = async (bookingId) => {
+    try {
+      const res = await axios.post(`/admin/bookings/${bookingId}/notify-sms`);
+      toast.success(res.data.message);
+    } catch (err) {
+      toast.error('Failed to trigger SMS notification');
+    }
+  };
+
   const handleApprove = async (id) => {
     try {
       const res = await axios.put(`/admin/bookings/${id}/approve`);
@@ -99,14 +108,14 @@ const AdminPendingBookings = () => {
                       <p className="text-slate-500 font-medium">{booking.customerEmail}</p>
                       <div className="flex items-center gap-1.5 mt-0.5">
                         <span className="text-[10px] text-slate-400 font-semibold">{booking.customerPhone}</span>
-                        <a
-                          href={`sms:${booking.customerPhone.replace(/\D/g, '')}?body=Hello%20${encodeURIComponent(booking.customerName)}%2C%20this%20is%20Hotel%20Lanka%20Pro.%20We%20received%20your%20booking%20request%20${booking.bookingId}%20for%20the%20${encodeURIComponent(booking.roomId?.name || '')}.%20It%20is%20currently%20under%20review.`}
-                          className="inline-flex items-center text-[9px] font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-1.5 py-0.5 rounded-md transition-smooth"
+                        <button
+                          onClick={() => handleSendSMS(booking._id)}
+                          className="inline-flex items-center text-[9px] font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-1.5 py-0.5 rounded-md transition-smooth cursor-pointer"
                           title="Send SMS notification"
                         >
                           <MessageSquare className="h-3 w-3 shrink-0" />
                           <span>Send SMS</span>
-                        </a>
+                        </button>
                       </div>
                     </td>
                     <td className="px-6 py-5 space-y-1">

@@ -163,4 +163,31 @@ router.put('/:id/checkout', async (req, res) => {
   }
 });
 
+/**
+ * @route   POST /api/admin/bookings/:id/notify-sms
+ * @desc    Manually trigger SMS notification alert for customer phone
+ * @access  Admin only
+ */
+router.post('/:id/notify-sms', async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) return res.status(404).json({ message: 'Booking not found' });
+
+    let message = `Hello ${booking.customerName}, this is Hotel Lanka Pro. Your booking ${booking.bookingId} status is: ${booking.status}.`;
+    if (booking.status === 'Pending') {
+      message = `Hello ${booking.customerName}, your booking request at Hotel Lanka Pro is received! Booking ID: ${booking.bookingId}. Status: Pending.`;
+    }
+
+    const { sendSMSNotification } = require('../utils/smsService');
+    const result = await sendSMSNotification(booking.customerPhone, message);
+
+    if (result && result.mock) {
+      return res.json({ message: `Simulated SMS to ${booking.customerPhone} (Configure Twilio in .env for live SMS)` });
+    }
+    res.json({ message: 'SMS notification sent successfully via Twilio!' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 module.exports = router;

@@ -25,6 +25,15 @@ const AdminAllBookings = () => {
     fetchBookings();
   }, [statusFilter]);
 
+  const handleSendSMS = async (bookingId) => {
+    try {
+      const res = await axios.post(`/admin/bookings/${bookingId}/notify-sms`);
+      toast.success(res.data.message);
+    } catch (err) {
+      toast.error('Failed to trigger SMS notification');
+    }
+  };
+
   const handleCheckIn = async (id) => {
     try {
       await axios.put(`/admin/bookings/${id}/checkin`);
@@ -133,14 +142,14 @@ const AdminAllBookings = () => {
                       {booking.customerPhone && (
                         <div className="flex items-center gap-1.5 mt-0.5">
                           <span className="text-[10px] text-slate-400 font-semibold">{booking.customerPhone}</span>
-                          <a
-                            href={`sms:${booking.customerPhone.replace(/\D/g, '')}?body=Hello%20${encodeURIComponent(booking.customerName)}%2C%20this%20is%20Hotel%20Lanka%20Pro.%20Your%20booking%20${booking.bookingId}%20status%2520is%2520now%2520${booking.status}.`}
-                            className="inline-flex items-center text-[9px] font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-1.5 py-0.5 rounded-md transition-smooth"
+                          <button
+                            onClick={() => handleSendSMS(booking._id)}
+                            className="inline-flex items-center text-[9px] font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-1.5 py-0.5 rounded-md transition-smooth cursor-pointer"
                             title="Send SMS notification"
                           >
                             <MessageSquare className="h-3 w-3 shrink-0" />
                             <span>Send SMS</span>
-                          </a>
+                          </button>
                         </div>
                       )}
                     </td>
