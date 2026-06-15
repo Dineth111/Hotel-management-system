@@ -4,6 +4,7 @@ const qrcode = require('qrcode-terminal');
 let whatsappClient = null;
 let isReady = false;
 
+// Auto-reconnect: re-init after 5 seconds if disconnected
 const initWhatsApp = () => {
   whatsappClient = new Client({
     authStrategy: new LocalAuth(),
@@ -47,6 +48,10 @@ const initWhatsApp = () => {
   whatsappClient.on('disconnected', (reason) => {
     console.log('⚠️  [WhatsApp] Client disconnected:', reason);
     isReady = false;
+    console.log('🔄 [WhatsApp] Reconnecting in 5 seconds...');
+    setTimeout(() => {
+      initWhatsApp();
+    }, 5000);
   });
 
   whatsappClient.initialize().catch(err => {
