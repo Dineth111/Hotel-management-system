@@ -30,12 +30,32 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-tr from-slate-50 via-white to-primary-50/20 relative overflow-hidden font-sans">
-      {/* Decorative ambient backgrounds */}
-      <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-primary-100/40 rounded-full filter blur-3xl -z-10 animate-pulse"></div>
-      <div className="absolute bottom-1/4 right-1/3 w-96 h-96 bg-luxury-100/30 rounded-full filter blur-3xl -z-10"></div>
+    <div className="min-h-[80vh] flex font-sans bg-white relative overflow-hidden">
+      
+      {/* Left Image Section */}
+      <div className="hidden lg:block lg:w-1/2 relative">
+        <div className="absolute inset-0 bg-primary-900/20 mix-blend-multiply z-10"></div>
+        <img 
+          src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
+          alt="Hotel Exterior" 
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute bottom-12 left-12 z-20 text-white max-w-md">
+          <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-white/20 backdrop-blur-md mb-6 shadow-xl">
+            <Hotel className="h-6 w-6 text-white" />
+          </div>
+          <h2 className="text-4xl font-display font-extrabold mb-4 leading-tight drop-shadow-md">Your Perfect Getaway Awaits</h2>
+          <p className="text-lg text-white/90 font-medium drop-shadow-sm">Log in to manage your bookings and explore our premium services.</p>
+        </div>
+      </div>
 
-      <div className="max-w-md w-full bg-white/85 backdrop-blur-md p-10 rounded-3xl border border-slate-200/60 shadow-xl shadow-slate-100/80 transition-smooth hover:shadow-2xl hover:shadow-slate-200/50">
+      {/* Right Form Section */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-tr from-slate-50 via-white to-primary-50/20 relative">
+        {/* Decorative ambient backgrounds */}
+        <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-primary-100/40 rounded-full filter blur-3xl -z-10 animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/3 w-96 h-96 bg-luxury-100/30 rounded-full filter blur-3xl -z-10"></div>
+
+        <div className="max-w-md w-full bg-white/85 backdrop-blur-md p-10 rounded-3xl border border-slate-200/60 shadow-xl shadow-slate-100/80 transition-smooth hover:shadow-2xl hover:shadow-slate-200/50">
         
         {/* Branding header */}
         <div className="text-center space-y-3 mb-8">
@@ -105,6 +125,7 @@ const Login = () => {
           </Link>
         </div>
 
+      </div>
       </div>
     </div>
   );

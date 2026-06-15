@@ -30,12 +30,33 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8 bg-slate-950 relative overflow-hidden font-sans">
-      {/* Decorative premium ambient glow */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary-900/10 rounded-full filter blur-3xl -z-10"></div>
-      <div className="absolute bottom-10 right-10 w-72 h-72 bg-luxury-900/10 rounded-full filter blur-3xl -z-10"></div>
+    <div className="min-h-[85vh] flex font-sans bg-slate-950 relative overflow-hidden">
+      
+      {/* Right Image Section for Admin (reversed from User) */}
+      <div className="hidden lg:block lg:w-1/2 relative order-2">
+        <div className="absolute inset-0 bg-slate-900/40 mix-blend-multiply z-10"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent z-10"></div>
+        <img 
+          src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
+          alt="Luxury Resort Administration" 
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute bottom-12 right-12 z-20 text-white max-w-md text-right">
+          <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-luxury-500/20 backdrop-blur-md mb-6 border border-luxury-500/30 shadow-xl ml-auto flex">
+            <ShieldAlert className="h-6 w-6 text-luxury-400" />
+          </div>
+          <h2 className="text-4xl font-display font-extrabold mb-4 leading-tight drop-shadow-md">Secure Administration</h2>
+          <p className="text-lg text-slate-300 font-medium drop-shadow-sm">Manage bookings, oversee operations, and maintain the exceptional standards of Hotel Lanka.</p>
+        </div>
+      </div>
 
-      <div className="max-w-md w-full bg-slate-900/80 backdrop-blur-md p-10 rounded-3xl border border-slate-800/80 shadow-2xl shadow-black/80 transition-smooth hover:border-slate-700/80">
+      {/* Left Form Section */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8 relative order-1">
+        {/* Decorative premium ambient glow */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary-900/10 rounded-full filter blur-3xl -z-10"></div>
+        <div className="absolute bottom-10 right-10 w-72 h-72 bg-luxury-900/10 rounded-full filter blur-3xl -z-10"></div>
+
+        <div className="max-w-md w-full bg-slate-900/80 backdrop-blur-md p-10 rounded-3xl border border-slate-800/80 shadow-2xl shadow-black/80 transition-smooth hover:border-slate-700/80">
         
         <div className="text-center space-y-3 mb-8">
           <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-gradient-to-tr from-luxury-500 to-luxury-600 text-white shadow-lg shadow-luxury-500/20 mb-2">
@@ -96,6 +117,7 @@ const AdminLogin = () => {
           </button>
         </form>
 
+        </div>
       </div>
     </div>
   );

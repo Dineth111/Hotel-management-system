@@ -29,16 +29,25 @@ const Footer = () => {
           <div>
             <h3 className="text-xs font-bold text-slate-200 tracking-widest uppercase mb-4">Quick Links</h3>
             <ul className="space-y-3 text-sm">
-              {['Home', 'Rooms', 'About', 'Location', 'Contact', 'FAQ'].map((item) => (
-                <li key={item}>
-                  <Link
-                    to={item === 'Home' ? '/' : `/${item.toLowerCase()}`}
-                    className="hover:text-primary-400 hover:pl-1 transition-all duration-200 block"
-                  >
-                    {item}
-                  </Link>
-                </li>
-              ))}
+              {['Home', 'Rooms', 'About', 'Location', 'Contact', 'FAQ', 'Terms of Service', 'Privacy Policy', 'Admin Login'].map((item) => {
+                let path = '/';
+                if (item === 'Home') path = '/';
+                else if (item === 'Terms of Service') path = '/terms';
+                else if (item === 'Privacy Policy') path = '/privacy';
+                else if (item === 'Admin Login') path = '/admin/login';
+                else path = `/${item.toLowerCase()}`;
+                
+                return (
+                  <li key={item}>
+                    <Link
+                      to={path}
+                      className="hover:text-primary-400 hover:pl-1 transition-all duration-200 block"
+                    >
+                      {item}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
@@ -67,9 +76,9 @@ const Footer = () => {
         <div className="mt-16 pt-8 border-t border-slate-900 text-xs text-slate-500 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
           <p>&copy; {currentYear} Hotel Lanka Pro. Crafted for luxury getaways.</p>
           <div className="flex space-x-6">
-            <span className="hover:text-white transition-colors cursor-pointer">Terms of Service</span>
+            <Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
             <span>&middot;</span>
-            <span className="hover:text-white transition-colors cursor-pointer">Privacy Policy</span>
+            <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
           </div>
         </div>
       </div>

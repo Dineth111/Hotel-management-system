@@ -19,6 +19,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import MyBookings from './pages/MyBookings';
 import FAQ from './pages/FAQ';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
 
 // Admin Pages
 import AdminLogin from './pages/admin/AdminLogin';
@@ -80,6 +82,8 @@ const AppContent = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/faq" element={<FAQ />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
           
           <Route path="/my-bookings" element={<CustomerRoute><MyBookings /></CustomerRoute>} />
 
