@@ -57,18 +57,36 @@ const Footer = () => {
             <ul className="space-y-4 text-sm">
               <li className="flex items-start space-x-3">
                 <MapPin className="h-5 w-5 text-luxury-400 shrink-0 mt-0.5" />
-                <span className="text-slate-300">No 123, Galle Road, Kalagedihena, LK</span>
+                <a
+                  href="https://www.google.com/maps/search/Kalagedihena,+Galle+Road,+Sri+Lanka"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-slate-300 hover:text-primary-400 transition-colors duration-200"
+                >
+                  No 123, Galle Road, Kalagedihena, LK
+                </a>
               </li>
               <li className="flex items-center space-x-3">
                 <Phone className="h-4.5 w-4.5 text-luxury-400 shrink-0" />
-                <span className="text-slate-300 font-semibold">+94 71 142 4377</span>
+                <a
+                  href="tel:+94711424377"
+                  className="text-slate-300 font-semibold hover:text-primary-400 transition-colors duration-200"
+                >
+                  +94 71 142 4377
+                </a>
               </li>
               <li className="flex items-center space-x-3">
                 <Mail className="h-4.5 w-4.5 text-luxury-400 shrink-0" />
-                <span className="text-slate-300">dinethsanjula647@gmail.com</span>
+                <a
+                  href="mailto:dinethsanjula647@gmail.com"
+                  className="text-slate-300 hover:text-primary-400 transition-colors duration-200"
+                >
+                  dinethsanjula647@gmail.com
+                </a>
               </li>
             </ul>
           </div>
+
 
         </div>
 
