@@ -23,6 +23,10 @@ const reviewsRoutes = require('./routes/reviews');
 // Initialize express app
 const app = express();
 
+// Initialize WhatsApp Client for automated notifications
+const { initWhatsApp } = require('./utils/whatsappService');
+initWhatsApp();
+
 // Create uploads folder if it doesn't exist
 const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {

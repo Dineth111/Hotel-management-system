@@ -1,7 +1,9 @@
 /**
- * SMS Notification Service
- * Fully structured for live integration with Twilio or local gateways.
+ * Notification Service
+ * Integrates automated WhatsApp notifications via whatsapp-web.js
  */
+const { sendWhatsAppMessage } = require('./whatsappService');
+
 const sendSMSNotification = async (customerPhone, message) => {
   try {
     const cleanPhone = customerPhone.replace(/\D/g, '');
@@ -23,15 +25,11 @@ const sendSMSNotification = async (customerPhone, message) => {
       console.log(`[SMS SUCCESS] Message SID: ${response.sid} sent to ${formattedPhone}`);
       return response;
     } else {
-      // Fallback: log to backend console during local development or when credentials are dummy
-      console.log(`\n--- MOCK SMS NOTIFICATION ---`);
-      console.log(`To: ${customerPhone}`);
-      console.log(`Message: ${message}`);
-      console.log(`------------------------------\n`);
-      return { mock: true, success: true };
+      // If no Twilio configured, use WhatsApp automatically!
+      return await sendWhatsAppMessage(customerPhone, message);
     }
   } catch (error) {
-    console.error(`[SMS ERROR] Failed to send SMS: ${error.message}`);
+    console.error(`[NOTIFICATION ERROR] Failed to send message: ${error.message}`);
   }
 };
 
