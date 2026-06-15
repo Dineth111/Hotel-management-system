@@ -4,8 +4,8 @@ import { Lock, Eye, Database, Share2, Cookie, Phone } from 'lucide-react';
 const Section = ({ icon: Icon, title, children }) => (
   <div className="mb-10">
     <div className="flex items-center gap-3 mb-3">
-      <div className="h-9 w-9 rounded-xl bg-luxury-50 flex items-center justify-center shrink-0">
-        <Icon className="h-5 w-5 text-luxury-500" />
+      <div className="h-9 w-9 rounded-xl flex items-center justify-center shrink-0" style={{background: '#eff6ff'}}>
+        <Icon className="h-5 w-5" style={{color: '#2563eb'}} />
       </div>
       <h2 className="text-xl font-bold text-slate-800">{title}</h2>
     </div>
@@ -19,13 +19,15 @@ const Privacy = () => {
       <div className="max-w-4xl mx-auto">
 
         {/* Header */}
-        <div className="bg-gradient-to-r from-primary-700 to-primary-500 text-white p-10 rounded-3xl mb-6 shadow-xl">
+        <div className="text-white p-10 rounded-3xl mb-6 shadow-xl" style={{background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #3b82f6 100%)'}}>
           <div className="flex items-center gap-3 mb-4">
-            <Lock className="h-8 w-8 text-white/80" />
-            <span className="text-sm font-bold uppercase tracking-widest text-white/80">Legal</span>
+            <div className="h-10 w-10 rounded-xl flex items-center justify-center" style={{background: 'rgba(255,255,255,0.15)'}}>
+              <Lock className="h-6 w-6 text-white" />
+            </div>
+            <span className="text-sm font-bold uppercase tracking-widest" style={{color: '#bfdbfe'}}>Legal</span>
           </div>
-          <h1 className="text-4xl font-display font-extrabold mb-3">Privacy Policy</h1>
-          <p className="text-primary-100">Effective Date: January 1, 2026 &nbsp;·&nbsp; Hotel Lanka Pro, Galle Road, Kalagedihena, Sri Lanka</p>
+          <h1 className="text-4xl font-display font-extrabold mb-3 text-white">Privacy Policy</h1>
+          <p style={{color: '#dbeafe'}}>Effective Date: January 1, 2026 &nbsp;·&nbsp; Hotel Lanka Pro, Galle Road, Kalagedihena, Sri Lanka</p>
         </div>
 
         {/* Content Card */}

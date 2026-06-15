@@ -4,8 +4,8 @@ import { FileText, ShieldCheck, CreditCard, XCircle, UserCheck, AlertTriangle, P
 const Section = ({ icon: Icon, title, children }) => (
   <div className="mb-10">
     <div className="flex items-center gap-3 mb-3">
-      <div className="h-9 w-9 rounded-xl bg-primary-50 flex items-center justify-center shrink-0">
-        <Icon className="h-5 w-5 text-primary-500" />
+      <div className="h-9 w-9 rounded-xl flex items-center justify-center shrink-0" style={{background: '#ecfdf5'}}>
+        <Icon className="h-5 w-5" style={{color: '#059669'}} />
       </div>
       <h2 className="text-xl font-bold text-slate-800">{title}</h2>
     </div>
@@ -19,13 +19,15 @@ const Terms = () => {
       <div className="max-w-4xl mx-auto">
 
         {/* Header */}
-        <div className="bg-gradient-to-r from-slate-900 to-slate-700 text-white p-10 rounded-3xl mb-6 shadow-xl">
+        <div className="text-white p-10 rounded-3xl mb-6 shadow-xl" style={{background: 'linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%)'}}>
           <div className="flex items-center gap-3 mb-4">
-            <FileText className="h-8 w-8 text-primary-400" />
-            <span className="text-sm font-bold uppercase tracking-widest text-primary-400">Legal</span>
+            <div className="h-10 w-10 rounded-xl flex items-center justify-center" style={{background: 'rgba(255,255,255,0.15)'}}>
+              <FileText className="h-6 w-6 text-white" />
+            </div>
+            <span className="text-sm font-bold uppercase tracking-widest" style={{color: '#6ee7b7'}}>Legal</span>
           </div>
-          <h1 className="text-4xl font-display font-extrabold mb-3">Terms of Service</h1>
-          <p className="text-slate-300">Effective Date: January 1, 2026 &nbsp;·&nbsp; Hotel Lanka Pro, Galle Road, Kalagedihena, Sri Lanka</p>
+          <h1 className="text-4xl font-display font-extrabold mb-3 text-white">Terms of Service</h1>
+          <p style={{color: '#a7f3d0'}}>Effective Date: January 1, 2026 &nbsp;·&nbsp; Hotel Lanka Pro, Galle Road, Kalagedihena, Sri Lanka</p>
         </div>
 
         {/* Content Card */}
